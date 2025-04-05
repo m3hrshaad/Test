@@ -10,10 +10,15 @@ import MemoryCardGame from './MemoryCardGame/MemoryCardGame';
 import Congratulations from "./MemoryCardGame/Congratulation";
 import CongtEasy from "./MemoryCardGame/Congratseasy";
 import CongtNormal from "./MemoryCardGame/Congratsnormal";
+import GameHistory from './MemoryCardGame/GameHistory';
 
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+  const userID = localStorage.getItem('userID'); //get userId from localStorage
+  // console.log("userId: ", userID);
+  // console.log(localStorage.getItem('token'));
+
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -49,6 +54,12 @@ const App = () => {
           path="/play"
           element={isAuthenticated ? <Play /> : <Navigate to="/login" />}
         />
+        
+        <Route
+          path="/history/:userID"
+          element={isAuthenticated  ? <GameHistory  userID={userID} /> : <Navigate to="/login" />}
+        />
+
   
         <Route
           path="/memory-card-game"

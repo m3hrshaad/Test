@@ -63,13 +63,42 @@ const modalPlayStyles = {
   },
 };
 
+const modalHistoryStyles = {
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    zIndex: 999,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  content: {
+    backgroundColor: "#1e1e2e",
+    border: "2px solid #4a4e69",
+    borderRadius: "20px",
+    padding: "40px",
+    maxWidth: "600px",
+    height: "300px",
+    width: "90%",
+    color: "#fff",
+    textAlign: "center",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    overflow: "hidden",
+  },
+};
+
 const Play = () => {
   const navigate = useNavigate();
   const [SettingsmodalIsOpen, setModalSettingIsOpen] = useState(false);
   const [PlaymodalIsOpen, setModalPlayIsOpen] = useState(false);
   const [difficulty, setDifficulty] = useState(null);
   const [isCalmMode, setIsCalmMode] = useState(false);
-  
+  const [HistorymodalIsOpen, setModalHistoryIsOpen] = useState(false);
+ 
+    
   const [bgVolume, setBgVolume] = useState(
     localStorage.getItem("bgVolume") !== null ? parseInt(localStorage.getItem("bgVolume"), 10) : 50
   );
@@ -174,6 +203,25 @@ const Play = () => {
     setDifficulty(level);
   };
 
+  const HistoryopenModal = () => {
+    playClickSound();
+    setModalHistoryIsOpen(true);
+  
+    const userID = localStorage.getItem('userID');   
+    console.log('UserIDS:', userID);
+    if (userID) {
+      navigate(`/history/${userID}`);
+    } else {
+      console.error('User ID not found in localStorage');
+    }
+  };
+
+  const HistorycloseModal = () => {
+    playClickSound();
+    setModalHistoryIsOpen(false);
+  };
+
+
   const handlePlay = () => {
     playClickSound();
     const userID = localStorage.getItem("userID");
@@ -240,7 +288,14 @@ const Play = () => {
           onClick={SettingopenModal}
           onMouseEnter={playHoverSound}
         >
-          Settings
+          Setting
+        </button>
+        <button
+          className={`game-button ${isCalmMode ? "calm-button" : ""}`}
+          onClick={HistoryopenModal}
+          onMouseEnter={playHoverSound}
+        >
+          History
         </button>
       </div>
       <Modal
@@ -392,6 +447,40 @@ const Play = () => {
           >
             Accept
           </button>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={HistorymodalIsOpen}
+        onRequestClose={HistorycloseModal}
+        style={{
+          ...modalHistoryStyles,
+          content: {
+            ...modalHistoryStyles.content,
+            backgroundColor: isCalmMode ? "#86a17d" : "#1e1e2e",
+            color: isCalmMode ? "#ffffff" : "#fff",
+          },
+        }}
+      >
+        <button
+          onClick={HistorycloseModal}
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "#fff",
+          }}
+        >
+          <X size={24} />
+        </button>
+
+        <h2 className={`${isCalmMode ? "calm-mode-label" : ""} modal-h2`}>
+          Game History
+        </h2>
+        <div className="history-list">
+          <p>No history available</p>
         </div>
       </Modal>
     </div>

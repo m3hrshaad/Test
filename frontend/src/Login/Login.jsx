@@ -12,11 +12,16 @@ const Login = ({ onLogin }) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/users/login', formData);
-      localStorage.setItem('token', response.data.token);
+      console.log('Response:', response);
+      const { token } = response.data;
+      // console.log('Response:', response);
+      // console.log('response.data:', response.data);
+      localStorage.setItem('token', token);
       localStorage.setItem('userID', response.data.userID);
-      onLogin();
+      onLogin(response.data);
       navigate('/play');
     } catch (error) {
+      console.log('Full Error:', error);
       if (error.response && error.response.status === 400) {
         setError('User not found. Please register first.');
       } else {
@@ -47,7 +52,7 @@ const Login = ({ onLogin }) => {
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           className={styles.input}
         />
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className={styles.buttonsWrapper} style={{ display: 'flex', justifyContent: 'space-between' }}>
           <button type="submit" className={`${styles.button} ${styles.loginButton}`}>
             Login
           </button>
